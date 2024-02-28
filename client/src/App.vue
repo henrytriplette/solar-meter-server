@@ -42,8 +42,8 @@ export default {
     // Event handler for new connections.
     // The callback function is invoked when a connection with the
     // server is established.
-    this.socket.on("connect", function () {
-      socket.emit("connection", { data: "Client connected!" });
+    this.socket.on("connect", () => {
+      this.socket.emit("connection", { data: "Client connected!" });
     });
 
     // Set log window
