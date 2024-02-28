@@ -1,0 +1,26 @@
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "yarn dev",
+    "dev": "vite --config config/vite.config.dev.js --host --mode development",
+    "build": "yarn build:prod",
+    "build:prod": "vite build --config config/vite.config.prod.js --mode production --emptyOutDir",
+    "flush": "rm -r node_modules/.vite/deps",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "pinia": "^2.1.7",
+    "socket.io-client": "^4.7.4",
+    "uikit": "^3.18.3",
+    "vue": "^3.4.19",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "sass": "^1.71.1",
+    "vite": "^5.1.4"
+  }
+}

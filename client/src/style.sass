@@ -1,0 +1,55 @@
+$text-color: #222222
+$text-color-inverse: #FFFFFF
+
+$background-color: #FFFFFF
+$background-color-inverse: #222222
+
+@import "./node_modules/uikit/src/scss/variables-theme.scss"
+@import "./node_modules/uikit/src/scss/mixins-theme.scss"
+@import "./node_modules/uikit/src/scss/uikit-theme.scss"
+
+// Font
+@import "https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap"
+
+// Utils
+@import "src/styles/breakpoints"
+@import "src/styles/utils"
+
+@import "src/styles/header"
+@import "src/styles/leftbar"
+@import "src/styles/content"
+
+*
+  margin: 0
+  padding: 0
+
+:root
+  --lux-accent: #2a343d
+  --lux-color: #222222
+  --lux-color-inverse: #FFFFFF
+  --lux-background: #FFFFFF
+  --lux-background-inverse: #222222
+
+  --lux-font-regular: normal 400 1.2rem/1.5rem 'Nunito Sans'
+  --lux-font-400: normal 400 1.2rem/1.5rem 'Nunito Sans'
+  --lux-font-600: normal 600 0.93rem/1rem 'Nunito Sans'
+  --lux-font-900: normal 900 1.2rem/1.5rem 'Nunito Sans'
+
+  --lux-font-8px: 0.5rem
+  --lux-font-14px: 0.87rem
+  --lux-font-15px: 0.93rem
+  --lux-font-16px: 1rem
+  --lux-font-17px: 1.06rem
+  --lux-font-18px: 1.125rem
+  --lux-font-19px: 1.187rem
+  --lux-font-20px: 1.25rem
+  --lux-font-25px: 1.56rem
+  --lux-font-28px: 1.75rem
+  --lux-font-30px: 1.875rem
+  --lux-font-36px: 2.25rem
+  --lux-font-50px: 3.125rem
+
+  --animate-delay: 0.5s
+
+.uk-background-primary
+  background-color: var(--lux-accent)
