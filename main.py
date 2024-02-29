@@ -1,7 +1,8 @@
-import os
-import subprocess
+import serial
 import configparser
 import json
+
+from time import sleep
 
 # fix windows registry stuff
 import mimetypes
@@ -71,6 +72,31 @@ def save_configfile():
         f.close()
 
         return output
+
+def read_serial_data():
+    messageid = 0
+    ser = serial.Serial()
+    ser.port = config["serial"]["port"]
+    ser.baudrate = config["serial"]["baudrate"]
+    ser.bytesize = 8
+    ser.parity = serial.PARITY_NONE
+    ser.stopbits = serial.STOPBITS_ONE
+    ser.timeout = 0
+    try:
+        ser.open()
+    except serial.SerialException as e:
+         yield 'event:error\n' + 'data:' + 'Serial port error({0}): {1}\n\n'.format(e.errno, e.strerror)
+         messageid = messageid + 1
+    while True:
+        data = ser.readline().decode('utf-8').strip()  # Read data from the serial port
+        yield f'data: {data}\n\n'  # Yield data as Server-Sent Events (SSE)
+
+@app.route('/serial_data')
+def serial_data():
+    solar_data = Response(read_serial_data(), mimetype='text/event-stream')
+    solar_data.headers.add('Access-Control-Allow-Origin', '*')
+    solar_data.headers.add('Cache-Control', 'no-cache')
+    return solar_data
 
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000, debug=config["system"]["debug"])
