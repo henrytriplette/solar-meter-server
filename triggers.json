@@ -1,1 +1,1 @@
-{"idleTime": 10, "triggerTime": 40, "triggers": [{"device": "192.168.1.100", "value": "10"}, {"device": "192.168.1.101", "value": "15"}]}
+{"idleTime": 5, "triggerTime": 20, "triggers": [{"device": "192.168.1.100", "value": "10"}, {"device": "192.168.1.101", "value": "15"}]}

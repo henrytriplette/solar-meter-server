@@ -50,10 +50,10 @@ def socketio_server():
     socketio.run(app, host="0.0.0.0", port=5000, debug=False)
 
 def background_function():
-    x = random.randint(5, 30)
-    print('x', x)
-    
     while True:
+        x = random.randint(9, 20) # Random value test
+        print('x', x)
+
         for trigger in data['triggers']:
             if x > int(trigger['value']):
                 elapsed_time = time.time() - trigger['start_time']
