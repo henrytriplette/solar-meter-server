@@ -4,9 +4,19 @@
   </h5>
   <div class="uk-form-horizontal uk-margin-large">
     <div class="uk-margin">
-      <label class="uk-form-label" for="idle-time-input">Idle Time</label>
+      <label class="uk-form-label" for="idle-time-input">Idle Time for Serial Reading</label>
       <div class="uk-form-controls">
-        <input class="uk-input" id="idle-time-input" type="number" placeholder="Idle time in seconds" v-model="idleTime">
+        <input class="uk-input" id="idle-time-input" type="number" placeholder="Idle time in seconds"
+          v-model="idleTime">
+      </div>
+    </div>
+  </div>
+  <div class="uk-form-horizontal uk-margin-large">
+    <div class="uk-margin">
+      <label class="uk-form-label" for="trigger-time-input">Time to wait before triggering:</label>
+      <div class="uk-form-controls">
+        <input class="uk-input" id="trigger-time-input" type="number" placeholder="Trigger time in seconds"
+          v-model="triggerTime">
       </div>
     </div>
   </div>
@@ -45,6 +55,7 @@ export default {
     return {
       triggerInputs: [],
       idleTime: 0,
+      triggerTime: 0,
     }
   },
   setup() {
@@ -58,6 +69,7 @@ export default {
           console.log(response.data);
           this.triggerInputs = response.data.triggers;
           this.idleTime = response.data.idleTime;
+          this.triggerTime = response.data.triggerTime;
         }
       })
       .catch((error) => {
@@ -76,6 +88,7 @@ export default {
       axios.post('/interact_triggers', {
         triggers: this.triggerInputs,
         idleTime: this.idleTime,
+        triggerTime: this.triggerTime,
       })
         .then((response) => {
           console.log(response);

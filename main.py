@@ -1,8 +1,9 @@
 import serial
 import configparser
 import json
-
-from time import sleep
+import threading
+import time
+import random
 
 # fix windows registry stuff
 import mimetypes
@@ -18,10 +19,19 @@ from flask import (
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
+from modules.utility import check_json_file, tasmota_setStatus
+
 # Read Configuration
 config = configparser.ConfigParser()
 config.read("config.ini")
 
+data = check_json_file('triggers.json')
+# Prefill timers
+for trigger in data['triggers']:
+    trigger['start_time'] = time.time()
+    trigger['triggered'] = 'off'
+
+# Start App definition
 app = Flask(__name__,
   static_url_path='/static',
   static_folder = "dist/static",
@@ -34,7 +44,30 @@ app.config["DEBUG"] = config["system"]["debug"]
 # enable CORS
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-socketio = SocketIO(app)
+socketio = SocketIO(app, always_connect=True, async_mode='threading')
+
+def socketio_server():
+    socketio.run(app, host="0.0.0.0", port=5000, debug=False)
+
+def background_function():
+    x = random.randint(5, 30)
+    print('x', x)
+    
+    while True:
+        for trigger in data['triggers']:
+            if x > int(trigger['value']):
+                elapsed_time = time.time() - trigger['start_time']
+                if elapsed_time >= data['triggerTime']:  # in seconds
+                    trigger['triggered'] = 'on'
+                    tasmota_setStatus(trigger['device'], trigger['triggered'])
+            else:
+                trigger['start_time'] = time.time()  # Reset start time if value drops below x
+                if trigger['triggered'] == 'on':
+                    trigger['triggered'] = 'off'
+                    tasmota_setStatus(trigger['device'], trigger['triggered'])
+
+        print(data['triggers'])
+        time.sleep(data['idleTime'])  # Sleep for idleTime seconds before running again
 
 @app.errorhandler(404)
 def not_found(e):
@@ -57,9 +90,11 @@ def save_configfile():
         new_data = request.get_json(silent=True)
         triggers = new_data.get("triggers")
         idleTime = new_data.get("idleTime")
+        triggerTime = new_data.get("triggerTime")
 
         data['triggers'] = triggers
         data['idleTime'] = idleTime
+        data['triggerTime'] = triggerTime
 
         with open('triggers.json', 'w') as f:
           json.dump(data, f)
@@ -99,4 +134,13 @@ def serial_data():
     return solar_data
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000, debug=config["system"]["debug"])
+    try:
+        # Start the Flask app in a separate thread
+        socketio_thread = threading.Thread(target=socketio_server)
+        socketio_thread.daemon = True
+        socketio_thread.start()
+        
+        # Start the background function in the main thread
+        background_function()
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt caught. Exiting...")
