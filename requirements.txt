@@ -1,4 +1,5 @@
 Flask
 Flask-SocketIO
 Flask-Cors
-requests\
+requests
+pyserial
